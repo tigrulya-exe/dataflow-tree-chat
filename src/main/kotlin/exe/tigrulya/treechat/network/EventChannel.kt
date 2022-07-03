@@ -1,11 +1,9 @@
 package exe.tigrulya.treechat.network
 
-import exe.tigrulya.treechat.model.data.Event
+interface EventChannel<E> {
+    suspend fun send(event: E)
 
-interface EventChannel {
-    suspend fun send(event: Event)
+    suspend fun receive(): E
 
-    suspend fun receive(): Event
-
-    suspend fun consumeEach(action: (Event) -> Unit)
+    suspend fun consumeEach(action: (E) -> Unit)
 }

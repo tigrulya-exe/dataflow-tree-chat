@@ -1,13 +1,15 @@
-package exe.tigrulya.treechat.listener
+package exe.tigrulya.treechat.socket
 
-import exe.tigrulya.treechat.network.EventChannel
+import exe.tigrulya.treechat.model.data.NetworkData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.runBlocking
 import java.net.DatagramPacket
 import java.net.DatagramSocket
+import java.net.InetSocketAddress
 
 class UdpSocketListener(
-    private val channel: EventChannel,
+    private val channel: SendChannel<NetworkData>,
     bufferSize: Int
 ) {
     private val receiveBuffer: ByteArray = ByteArray(bufferSize)
@@ -21,7 +23,14 @@ class UdpSocketListener(
 
         //todo add flag + async net io
         while (true) {
-            channel.send()
+            socket.receive(datagramPacket)
+
+            channel.send(
+                NetworkData(
+                    address = datagramPacket.socketAddress as InetSocketAddress,
+                    data = datagramPacket.data
+                )
+            )
         }
     }
 }

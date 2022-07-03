@@ -1,13 +1,27 @@
 package exe.tigrulya.treechat.model
 
-import exe.tigrulya.treechat.model.data.Alternate
-import exe.tigrulya.treechat.model.data.TreeNode
-import exe.tigrulya.treechat.model.data.VisibleEvent
+import exe.tigrulya.treechat.model.data.*
+import java.net.InetSocketAddress
 import java.util.*
+import javax.print.attribute.standard.Destination
 
 class ApplicationModel(
-    var alternate: Alternate?,
-    val neighbours: MutableMap<UUID, TreeNode> = mutableMapOf(),
-    //todo
-    val events: List<VisibleEvent>
+    myAddress: InetSocketAddress,
+    alternate: Alternate? = null,
+) {
+    val data = DataModel()
+    val network = NetworkModel(myAddress, alternate)
+}
+
+data class DataModel(
+    val nodes: MutableMap<UUID, TreeNode> = mutableMapOf(),
+    val events: MutableList<VisibleEvent> = mutableListOf(),
 )
+
+data class NetworkModel(
+    val myAddress: InetSocketAddress,
+    var alternate: Alternate? = null,
+    val nodes: MutableMap<UUID, TreeNode> = mutableMapOf(),
+    val unconfirmedMessages: MutableMap<UUID, UnconfirmedEvent> = mutableMapOf()
+)
+
